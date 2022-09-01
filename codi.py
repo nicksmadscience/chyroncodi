@@ -19,11 +19,24 @@ print(ser.name)         # check which port was really used
 
 def bg(serial, start, r1, g1, b1, k1, end, r2, g2, b2, k2):
     bg_out = '\\DB\\2\\R\\{start}\\{r1}\\{g1}\\{b1}\\{k1}\\{end}\\{r2}\\{g2}\\{b2}\\{k2}\\\\'.format(start=start, r1=r1, g1=g1, b1=b1, k1=k1, end=end, r2=r2, g2=g2, b2=b2, k2=k2)
-    serial.write(bg_out.encode("ascii"))
+    serial.write(bg_out.encode("utf-8"))
+    
+    
+def tab(serial, name, x, y, color, font, justification):
+    tab_out = '\\DT\\{name}\\{x}\\{y}\\{color}\\{font}\\{justification}\\\\'.format(name=name, x=x, y=y, color=color, font=font, justification=justification)
+    serial.write(tab_out.encode("utf-8"))
+    
+def tabtext(serial, name, x, y, color, font, justification, text):
+    tab_out = '\\DT\\{name}\\{x}\\{y}\\{color}\\{font}\\{justification}\\\\\\TU\\{name}\{text}\\\\'.format(name=name, x=x, y=y, color=color, font=font, justification=justification, text=text)
+    serial.write(tab_out.encode("utf-8"))
+    
+def pageblank(serial):
+    serial.write(b'\\PB\\\\')
+    
+def videoblank(serial):
+    ser.write(b'\\VB\\\\')
 
 
-ser.write(b'\\PB\\\\')
-ser.write(b'\\VB\\\\')
 # Video Blank (turn on background).
 
 # background
@@ -43,55 +56,38 @@ time.sleep(0.5)
 # Download shaded background (from red to blue); scan- line 1 is red, scanline 50 is blue.
 
 
-ser.write(b'\\DT\\title\\20\\20\\3\\5\\L\\\\')
-ser.write(b'\\DT\\icao-l\\20\\115\\2\\1\\L\\\\')
-ser.write(b'\\DT\\icao\\75\\100\\2\\3\\L\\\\')
-ser.write(b'\\DT\\reg-l\\20\\165\\2\\1\\L\\\\')
-ser.write(b'\\DT\\reg\\75\\150\\2\\3\\L\\\\')
+tabtext(serial=ser, name="title", x=20, y=20, color=3, font=5, justification='L', text='Cool aircraft nearby!')
+tabtext(serial=ser, name="icao-l", x=20, y=115, color=2, font=1, justification='L', text='ICAO')
+tabtext(serial=ser, name="icao", x=75, y=100, color=2, font=3, justification='L', text='AS65')
+tabtext(serial=ser, name="reg-l", x=20, y=165, color=2, font=1, justification='L', text='REG.')
+tabtext(serial=ser, name="reg", x=75, y=150, color=2, font=3, justification='L', text='N600LL')
 time.sleep(0.25)
 
-ser.write(b'\\DT\\lat-l\\20\\235\\2\\1\\L\\\\')
-ser.write(b'\\DT\\lat\\75\\220\\2\\3\\L\\\\')
-ser.write(b'\\DT\\lon-l\\200\\235\\2\\1\\L\\\\')
-ser.write(b'\\DT\\lon\\255\\220\\2\\3\\L\\\\')
-time.sleep(0.25)
-ser.write(b'\\DT\\head-l\\20\\285\\2\\1\\L\\\\')
-ser.write(b'\\DT\\head\\84\\270\\2\\3\\L\\\\')
-ser.write(b'\\DT\\alt-l\\200\\285\\2\\1\\L\\\\')
-ser.write(b'\\DT\\alt\\250\\270\\2\\3\\L\\\\')
-time.sleep(0.25)
-
-ser.write(b'\\DT\\ang-l\\20\\415\\2\\1\\L\\\\')
-ser.write(b'\\DT\\ang\\82\\400\\2\\3\\L\\\\')
-ser.write(b'\\DT\\eta-l\\200\\415\\2\\1\\L\\\\')
-ser.write(b'\\DT\\eta\\250\\400\\2\\3\\L\\\\')
-
-time.sleep(0.25)
-
-ser.write(b'\\TU\\title\\Cool aircraft nearby!\\\\')
-ser.write(b'\\TU\\icao-l\\ICAO\\\\')
-ser.write(b'\\TU\\icao\\AS65\\\\')
-ser.write(b'\\TU\\reg-l\\REG.\\\\')
-ser.write(b'\\TU\\reg\\N600LL\\\\')
-time.sleep(0.25)
-ser.write(b'\\TU\\lat-l\\LAT\\\\')
-ser.write(b'\\TU\\lat\\-37.15\\\\')
-ser.write(b'\\TU\\lon-l\\LON\\\\')
-ser.write(b'\\TU\\lon\\75.19\\\\')
-time.sleep(0.25)
-ser.write(b'\\TU\\head-l\\HEAD\\\\')
-ser.write(b'\\TU\\head\\1.3\xae\\\\')
-ser.write(b'\\TU\\alt-l\\ALT\\\\')
-ser.write(b'\\TU\\alt\\1500ft\\\\')
-time.sleep(0.25)
-
-ser.write(b'\\TU\\ang-l\\ANG.\\\\')
-ser.write(b'\\TU\\ang\\15.2\xae\\\\')
-ser.write(b'\\TU\\eta-l\\ETA\\\\')
-ser.write(b'\\TU\\eta\\4m5s\\\\')
+tabtext(serial=ser, name="lat-l", x=20, y=235, color=2, font=1, justification='L', text='LAT')
+tabtext(serial=ser, name="lat", x=75, y=220, color=2, font=3, justification='L', text='37.15')
+tabtext(serial=ser, name="lon-l", x=200, y=235, color=2, font=1, justification='L', text='LON')
+tabtext(serial=ser, name="lon", x=255, y=220, color=2, font=3, justification='L', text='-75.19')
 time.sleep(0.25)
 
 
+
+tabtext(serial=ser, name="head-l", x=20, y=285, color=2, font=1, justification='L', text='HEAD')
+tabtext(serial=ser, name="head", x=84, y=270, color=2, font=3, justification='L', text='1.3\xae')
+tabtext(serial=ser, name="alt-l", x=200, y=285, color=2, font=1, justification='L', text='ALT')
+tabtext(serial=ser, name="alt", x=250, y=270, color=2, font=3, justification='L', text='1500ft')
+
+
+
+time.sleep(0.25)
+
+tabtext(serial=ser, name="ang-l", x=20, y=415, color=2, font=1, justification='L', text='ANG.')
+tabtext(serial=ser, name="ang", x=84, y=400, color=2, font=3, justification='L', text='15.2\xae')
+tabtext(serial=ser, name="eta-l", x=200, y=415, color=2, font=1, justification='L', text='ETA')
+tabtext(serial=ser, name="eta", x=250, y=400, color=2, font=3, justification='L', text='4m5s')
+
+
+
+time.sleep(0.25)
 
 # \ES\xaddr\yaddr\color\font\format\mode[\pad\type]\\
 ser.write(b'\\ES\\470\\400\\3\\3\\MM:SS.TH\\1\\\\')
