@@ -17,24 +17,25 @@ ser = serial.Serial('/dev/tty.usbserial-110', baudrate=38400, bytesize=8, parity
 print(ser.name)         # check which port was really used
 
 
-# def bg(start, r1, g1, b1, k1, end, r2, g2, b2, k2):
-#     return b'\\DB\\2\\R\\{start}\\{r1}\\{g1}\\{b1}\\{k1}\\{end}\\{r2}\\{g2}\\{b2}\\{k2}\\\\'.format(start=start, r1=r1, g1=g1, b1=b1, end=end, r2=r2, g2=g2, b2=b2, k2=k2)
+def bg(serial, start, r1, g1, b1, k1, end, r2, g2, b2, k2):
+    bg_out = '\\DB\\2\\R\\{start}\\{r1}\\{g1}\\{b1}\\{k1}\\{end}\\{r2}\\{g2}\\{b2}\\{k2}\\\\'.format(start=start, r1=r1, g1=g1, b1=b1, k1=k1, end=end, r2=r2, g2=g2, b2=b2, k2=k2)
+    serial.write(bg_out.encode("ascii"))
 
 
+ser.write(b'\\PB\\\\')
 ser.write(b'\\VB\\\\')
 # Video Blank (turn on background).
-# ser.write(b'\\DB\\2\\R\\1\\64\\0\\128\\0\\200\\0\\192\\256\\0\\\\')
-
 
 # background
-ser.write(b'\\DB\\2\\R\\1\\24\\0\\48\\0\\256\\96\\0\\192\\0\\\\')
+bg(serial=ser, start=1, r1=24, g1=0, b1=48, k1=0, end=256, r2=96, g2=0, b2=192, k2=0)
 
 # header
-ser.write(b'\\DB\\2\\R\\1\\200\\100\\0\\0\\42\\0\\0\\200\\0\\\\')
+bg(serial=ser, start=1, r1=200, g1=100, b1=0, k1=0, end=42, r2=0, g2=0, b2=200, k2=0)
 
-# highlight background
-ser.write(b'\\DB\\2\\R\\48\\36\\60\\86\\0\\96\\90\\0\\162\\0\\\\')
-ser.write(b'\\DB\\2\\R\\197\\36\\120\\48\\0\\224\\112\\180\\192\\0\\\\')
+# highlight backgrounds
+bg(serial=ser, start=48, r1=36, g1=60, b1=86, k1=0, end=96, r2=90, g2=0, b2=162, k2=0)
+bg(serial=ser, start=197, r1=36, g1=120, b1=48, k1=0, end=224, r2=112, g2=180, b2=192, k2=0)
+
 
 time.sleep(0.5)
 
@@ -53,6 +54,7 @@ ser.write(b'\\DT\\lat-l\\20\\235\\2\\1\\L\\\\')
 ser.write(b'\\DT\\lat\\75\\220\\2\\3\\L\\\\')
 ser.write(b'\\DT\\lon-l\\200\\235\\2\\1\\L\\\\')
 ser.write(b'\\DT\\lon\\255\\220\\2\\3\\L\\\\')
+time.sleep(0.25)
 ser.write(b'\\DT\\head-l\\20\\285\\2\\1\\L\\\\')
 ser.write(b'\\DT\\head\\84\\270\\2\\3\\L\\\\')
 ser.write(b'\\DT\\alt-l\\200\\285\\2\\1\\L\\\\')
@@ -76,6 +78,7 @@ ser.write(b'\\TU\\lat-l\\LAT\\\\')
 ser.write(b'\\TU\\lat\\-37.15\\\\')
 ser.write(b'\\TU\\lon-l\\LON\\\\')
 ser.write(b'\\TU\\lon\\75.19\\\\')
+time.sleep(0.25)
 ser.write(b'\\TU\\head-l\\HEAD\\\\')
 ser.write(b'\\TU\\head\\1.3\xae\\\\')
 ser.write(b'\\TU\\alt-l\\ALT\\\\')
