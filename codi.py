@@ -1,20 +1,6 @@
 import serial, time
-# ser = serial.Serial('/dev/tty.usbserial-1120')  # open serial port
-# print(ser.name)         # check which port was really used
 
-
-# # for i in range(-255, 255):
-# #     rofl = "\\\\VH\\\\{n}\\\\\\\\".format(n=i).encode()
-# #     ser.write(rofl)
-# #     print (rofl)
-# #     time.sleep(0.05)
-# ser.write(b'\\VB\\\\')     # write a string
-# ser.write(b'\\DB\\2\\R\\1\\200\\0\\0\\0\\50\\0\\0\\200\\0\\\\')
-# ser.close()             # close port
-
-
-ser = serial.Serial('/dev/tty.usbserial-110', baudrate=38400, bytesize=8, parity='N', stopbits=1, timeout=None, xonxoff=0, rtscts=0)  # open serial port
-print(ser.name)         # check which port was really used
+ser = serial.Serial('/dev/tty.usbserial-110', baudrate=9600, bytesize=8, parity='N', stopbits=1, timeout=None, xonxoff=0, rtscts=0)  # open serial port
 
 
 def bg(serial, start, r1, g1, b1, k1, end, r2, g2, b2, k2):
@@ -33,11 +19,20 @@ def tabtext(serial, name, x, y, color, font, justification, text):
 def pageblank(serial):
     serial.write(b'\\PB\\\\')
     
-def videoblank(serial):
-    ser.write(b'\\VB\\\\')
-
-
 # Video Blank (turn on background).
+def videoblank(serial):
+    serial.write(b'\\VB\\\\')
+    
+def systemreset(serial):
+    serial.write(b'\\SR\\\\')
+    
+
+pageblank(ser)
+videoblank(ser)
+
+
+
+
 
 # background
 bg(serial=ser, start=1, r1=24, g1=0, b1=48, k1=0, end=256, r2=96, g2=0, b2=192, k2=0)
@@ -45,16 +40,14 @@ bg(serial=ser, start=1, r1=24, g1=0, b1=48, k1=0, end=256, r2=96, g2=0, b2=192, 
 # header
 bg(serial=ser, start=1, r1=200, g1=100, b1=0, k1=0, end=42, r2=0, g2=0, b2=200, k2=0)
 
+
+
+
+
 # highlight backgrounds
 bg(serial=ser, start=48, r1=36, g1=60, b1=86, k1=0, end=96, r2=90, g2=0, b2=162, k2=0)
 bg(serial=ser, start=197, r1=36, g1=120, b1=48, k1=0, end=224, r2=112, g2=180, b2=192, k2=0)
-
-
 time.sleep(0.5)
-
-# bg(1, 256, 128, 0, 0, 42, 0, 128, 256, 0)\
-# Download shaded background (from red to blue); scan- line 1 is red, scanline 50 is blue.
-
 
 tabtext(serial=ser, name="title", x=20, y=20, color=3, font=5, justification='L', text='Cool aircraft nearby!')
 tabtext(serial=ser, name="icao-l", x=20, y=115, color=2, font=1, justification='L', text='ICAO')
@@ -69,31 +62,36 @@ tabtext(serial=ser, name="lon-l", x=200, y=235, color=2, font=1, justification='
 tabtext(serial=ser, name="lon", x=255, y=220, color=2, font=3, justification='L', text='-75.19')
 time.sleep(0.25)
 
-
-
 tabtext(serial=ser, name="head-l", x=20, y=285, color=2, font=1, justification='L', text='HEAD')
 tabtext(serial=ser, name="head", x=84, y=270, color=2, font=3, justification='L', text='1.3\xae')
 tabtext(serial=ser, name="alt-l", x=200, y=285, color=2, font=1, justification='L', text='ALT')
 tabtext(serial=ser, name="alt", x=250, y=270, color=2, font=3, justification='L', text='1500ft')
-
-
-
 time.sleep(0.25)
 
 tabtext(serial=ser, name="ang-l", x=20, y=415, color=2, font=1, justification='L', text='ANG.')
 tabtext(serial=ser, name="ang", x=84, y=400, color=2, font=3, justification='L', text='15.2\xae')
 tabtext(serial=ser, name="eta-l", x=200, y=415, color=2, font=1, justification='L', text='ETA')
 tabtext(serial=ser, name="eta", x=250, y=400, color=2, font=3, justification='L', text='4m5s')
-
-
-
 time.sleep(0.25)
 
-# \ES\xaddr\yaddr\color\font\format\mode[\pad\type]\\
-ser.write(b'\\ES\\470\\400\\3\\3\\MM:SS.TH\\1\\\\')
-ser.write(b'\\ET\\000405\\\\')
-ser.write(b'\\ED\\1\\\\')
-ser.write(b'\\EB\\1\\\\')
+# # \ES\xaddr\yaddr\color\font\format\mode[\pad\type]\\
+# ser.write(b'\\ES\\470\\400\\3\\3\\MM:SS.TH\\1\\\\')
+# ser.write(b'\\ET\\000405\\\\')
+# ser.write(b'\\ED\\1\\\\')
+# ser.write(b'\\EB\\1\\\\')
+
+# tabtext(serial=ser, name="title", x=20, y=20, color=3, font=5, justification='L', text='Latest followers')
+
+# for i in range(0, 7):
+#     print (i)
+#     tabtext(serial=ser, name="fol{i}".format(i=i), x=20, y=95 + (i * 50), color=2, font=2, justification='L', text='nicksmadscience')
+#     time.sleep(0.2)
+    
+# for i in range(0, 7):
+#     print (i)
+#     tabtext(serial=ser, name="fol{i}".format(i=i), x=300, y=95 + (i * 50), color=2, font=2, justification='L', text='nicksmadscience')
+#     time.sleep(0.2)
+
 
 
 
